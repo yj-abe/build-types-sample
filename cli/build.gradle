@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'jp.cloudace.buildtypes'
+
+group 'jp.cloudace.sample.cli'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+buildTypes {
+    developOn "local"
+    types {
+        local {
+            debuggable = true
+            buildConfigField "String", "API_KEY", "\"local_key\""
+        }
+        develop {
+            buildConfigField "String", "API_KEY", "\"dev_key\""
+        }
+        staging {
+            buildConfigField "String", "API_KEY", "\"stg_key\""
+        }
+        product {
+            buildConfigField "String", "API_KEY", "\"pro_key\""
+        }
+    }
+}
+
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+

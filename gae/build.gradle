@@ -1,0 +1,50 @@
+apply plugin: "java"
+apply plugin: "war"
+apply plugin: "jp.cloudace.buildtypes"
+apply plugin: "com.google.cloud.tools.appengine"
+apply plugin: "com.google.cloud.tools.endpoints-framework-server"
+
+group 'jp.cloudace.sample.gae'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+buildTypes {
+    developOn "local"
+    types {
+        local {
+            debuggable = true
+            buildConfigField "String", "ENV_NAME", "\"ローカル環境\""
+        }
+        develop {
+            buildConfigField "String", "ENV_NAME", "\"開発環境\""
+        }
+        staging {
+            buildConfigField "String", "ENV_NAME", "\"ステージング環境\""
+        }
+        product {
+            buildConfigField "String", "ENV_NAME", "\"本番環境\""
+        }
+    }
+}
+
+def versions = [:]
+versions.endpoints = "2.2.1"
+
+dependencies {
+    implementation "com.google.appengine:appengine-api-1.0-sdk:1.9.76"
+    implementation "com.google.endpoints:endpoints-framework:${versions.endpoints}"
+    implementation "com.google.endpoints:endpoints-framework-guice:${versions.endpoints}"
+    compileOnly "javax.servlet:javax.servlet-api:3.1.0"
+    implementation "com.google.code.gson:gson:2.8.5"
+    testImplementation "junit:junit:4.12"
+}
+
+buildTypes.types.each {
+    def typeName = it.name.capitalize()
+    task "appengine${typeName}Run"(dependsOn: ["appengineRun", "build${typeName}"])
+    task "appengine${typeName}Deploy"(dependsOn: ["appengineDeploy", "build${typeName}"])
+    tasks.appengineRun.mustRunAfter("build${typeName}")
+    tasks.appengineDeploy.mustRunAfter("build${typeName}")
+}

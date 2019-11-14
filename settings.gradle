@@ -1,0 +1,4 @@
+rootProject.name = 'buildtypes-sample'
+include 'cli'
+include 'gae'
+
