@@ -41,10 +41,12 @@ dependencies {
     testImplementation "junit:junit:4.12"
 }
 
+// 各環境ごとに実行、デプロイのタスクを作成
 buildTypes.types.each {
     def typeName = it.name.capitalize()
     task "appengine${typeName}Run"(dependsOn: ["appengineRun", "build${typeName}"])
     task "appengine${typeName}Deploy"(dependsOn: ["appengineDeploy", "build${typeName}"])
+    // 環境ごとの実装、定数、リソースファイルを成果物に含めるために、タスクの実行順序を設定
     tasks.appengineRun.mustRunAfter("build${typeName}")
     tasks.appengineDeploy.mustRunAfter("build${typeName}")
 }
