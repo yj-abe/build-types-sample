@@ -1,8 +1,8 @@
 apply plugin: "java"
 apply plugin: "war"
-apply plugin: "jp.cloudace.buildtypes"
 apply plugin: "com.google.cloud.tools.appengine"
 apply plugin: "com.google.cloud.tools.endpoints-framework-server"
+apply plugin: "jp.cloudace.buildtypes-appengine"
 
 group 'jp.cloudace.sample.gae'
 version '1.0.0'
@@ -27,6 +27,26 @@ buildTypes {
             buildConfigField "String", "ENV_NAME", "\"本番環境\""
         }
     }
+    appengine {
+        deploy {
+            develop {
+                projectId = "INPUT YOUR DEVELOP SERVER PROJECT ID"
+                version = "someone-test"
+                promote = true
+            }
+            staging {
+                projectId = "INPUT YOUR STAGING SERVER PROJECT ID"
+            }
+            product {
+                projectId = "INPUT YOUR PRODUCT SERVER PROJECT ID"
+            }
+        }
+        run {
+            local {
+                port = 8888
+            }
+        }
+    }
 }
 
 def versions = [:]
@@ -39,14 +59,4 @@ dependencies {
     compileOnly "javax.servlet:javax.servlet-api:3.1.0"
     implementation "com.google.code.gson:gson:2.8.5"
     testImplementation "junit:junit:4.12"
-}
-
-// 各環境ごとに実行、デプロイのタスクを作成
-buildTypes.types.each {
-    def typeName = it.name.capitalize()
-    task "appengine${typeName}Run"(dependsOn: ["appengineRun", "build${typeName}"])
-    task "appengine${typeName}Deploy"(dependsOn: ["appengineDeploy", "build${typeName}"])
-    // 環境ごとの実装、定数、リソースファイルを成果物に含めるために、タスクの実行順序を設定
-    tasks.appengineRun.mustRunAfter("build${typeName}")
-    tasks.appengineDeploy.mustRunAfter("build${typeName}")
 }

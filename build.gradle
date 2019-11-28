@@ -4,10 +4,14 @@ buildscript {
         maven {
             url 'https://github.com/yj-abe/build-types-gradle-plugin/raw/gh-pages/repository'
         }
+        maven {
+            url 'https://github.com/yj-abe/build-types-appengine-gradle-plugin/raw/maven/repository'
+        }
     }
     dependencies {
         classpath 'jp.cloudace:buildtypes:0.2.0'
-        classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.4'
+        classpath 'jp.cloudace:buildtypes-appengine:0.1.3'
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
         classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:2.0.1'
     }
 }
